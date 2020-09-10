@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.dreamer07.dao.EmployeeDao">
+
+    <!-- public Employee getEmpById(Integer id); -->
+    <select id="getEmpById" resultType="pers.dreamer07.bean.Employee">
+        SELECT * FROM employee WHERE id = #{id}
+    </select>
+
+    <!--
+    获取自增id的值 - 使用 insert / update 标签中的 useGeneratedKeys 和  keyProperty 属性
+        - useGeneratedKeys：底层调用原生 JDBC 中的方法获取添加数据后自增id的值
+        - keyProperty：将获取的自增id的值，赋给 employee 对象中的对应的 属性
+     -->
+    <insert id="addEmp" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO employee(emp_name,email,gender) VALUES(#{empName},#{email},#{gender})
+    </insert>
+
+    <!--
+    获取非自增主键 id 的值
+        - 在内部使用 selectKey 标签
+    -->
+    <insert id="addEmp2" >
+        <!--
+        selectKey 标签
+            - 作用：可以通过指定 order 属性，设置 BEFPRE / AFTER 可以使其在核心 sql 语句 之前/之后 执行
+            - 使用：
+                1. 设置 order 属性
+                2. 设置 resultType 属性，指定返回值类型
+                3. 设置 keyProperty 属性，将查询的返回值赋值给对应的属性
+         -->
+        <selectKey order="BEFORE" resultType="integer" keyProperty="id">
+            SELECT MAX(id) + 1 FROM employee <!-- 对于没有自增id的主键，先查询出最大的主键id值，并将值+1后赋值给对于的属性，后再存入数据 -->
+        </selectKey>
+        INSERT INTO employee(id,emp_name,email,gender) VALUES(#{id},#{empName},#{email},#{gender})
+    </insert>
+
+
+</mapper>

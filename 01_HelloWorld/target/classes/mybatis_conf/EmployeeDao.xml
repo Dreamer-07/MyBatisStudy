@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+mapper标签通过 namespaces 属性用来指定需要实现的接口 DAO(全类名)
+-->
+<mapper namespace="pers.dreamer07.dao.EmployeeDao">
+    <!--
+    select标签代表该对应的实现方法是一个查询方法
+        id = 实现的方法名
+        resultType = 该方法的返回值类型(全类名)
+    -->
+    <!--
+    在其内部完成 定制 sql 语句
+        #{参数名}代表指定位置的数据 由 相同名称的参数名 填充
+    -->
+    <select id="getEmpById" resultType="pers.dreamer07.bean.Employee">
+        select * from employee where id = #{id}
+    </select>
+</mapper>

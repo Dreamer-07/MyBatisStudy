@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--
+    1. properties 标签的使用
+        - 作用：引入外部资源文件
+        - 属性
+            - resource:从类路径下出发寻找资源
+            - url:从磁盘/网络上寻找资源
+        - 使用：使用${key}的方式获取对应的value值
+    -->
+    <properties resource="jdbc.properties"></properties>
+
+    <!--
+    2. settings 标签的使用
+         - 作用：这是 MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为
+         - 属性：这里以设置 mapUnderscoreToCamelCase 属性为例
+         - 使用：在内部定义 setting 标签，通过其 name 和 value 属性值
+                指定要修改的属性的对应的值
+    -->
+    <settings>
+        <!--
+        mapUnderscoreToCamelCase属性：是否开启 驼峰命名自动映射
+            可以将数据库列名 xxx_xxx，自动解析成 xxxXxxx 符合驼峰命名的字段
+        -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <!--
+    3. typeAliases
+        - 作用：可以为常用的类起别名，使其在 SQL 映射文件中可以不写全类名
+        - 使用：在内部定义 typeAlias 标签，通过 type 属性为对应的全类名起别名
+    -->
+    <typeAliases>
+        <!--
+        typeAlias 标签
+            - 通过设置 type 属性指定对应的全类名，默认别名为类名(不区分大小写)
+            - 可以通过设置 alias 属性设置指定的别名(使用时也不区分大小写)
+        -->
+<!--        <typeAlias type="pers.dreamer07.bean.Employee" alias="emp"></typeAlias>-->
+
+        <!--
+        package 标签
+            - 通过 name 属性值指定包名，为该包下的所有类起别名,默认别名都是类型(不区分大小写)
+        -->
+<!--        <package name="pers.dreamer07"/>-->
+    </typeAliases>
+
+    <!--
+    4，environments标签
+        - 作用：环境管理器，可以在内部通过 environment 标签配置多个环境
+            - 可以通过修改 default 属性指定默认的环境id
+            - environment 标签 - 对应一个具体的环境配置
+                - id属性为唯一标识
+                - 在内部可以配置 数据源dataSource 和 事务管理器transactionManager
+    -->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <!-- 配置数据源 -->
+            <dataSource type="POOLED">
+                <!-- 配置连接数据库的四个基本信息 -->
+                <property name="driver" value="${driverClass}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--
+    5. databaseIdProvider 标签
+        作用：mybatis 针对数据库移植性使用的标签
+        使用：
+            - type属性固定为 DB_VENDOR
+            - 在内部使用 property 标签指定数据库厂商和别名
+    -->
+    <databaseIdProvider type="DB_VENDOR">
+        <!--
+        property 标签
+            使用：
+                - name 属性指定 数据库厂商白标识 [MySQL / Oracle / SQL Server]
+                - value 属性指定对应的别名
+        -->
+        <property name="MySQL" value="mysql"/>
+        <property name="Oracle" value="orac"/>
+        <property name="SQL Server" value="sqlserver"/>
+    </databaseIdProvider>
+
+    <!--
+    6. mappers 标签
+        - 作用：负责管理 SQL 映射文件在 MyBatis 中的注册
+        - 使用：在内部定义 mapper 标签，通过该标签加载 SQL 映射文件
+    -->
+    <mappers>
+        <!--
+        mapper标签的使用
+            1. resource(常用)：通过类路径加载 SQL 映射文件
+            2. url：可以通过 网络 / 磁盘 加载 SQL 映射文件
+            3. class：
+                3.1 用法一：指定全类名，要求时在该类的同路径下有一个同名的 SQL 映射文件
+                3.2 用法二：指定全类名：使用注解配置该类
+        -->
+<!--        <mapper resource="mybatis_conf/EmployeeDao.xml"/>-->
+        <package name="pers.dreamer07"/>
+    </mappers>
+</configuration>
