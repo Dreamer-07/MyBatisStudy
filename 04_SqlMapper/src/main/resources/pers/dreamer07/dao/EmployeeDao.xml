@@ -9,6 +9,11 @@
         SELECT * FROM employee WHERE id = #{id}
     </select>
 
+    <!-- public Employee getEmpByIdAndEmpName(@Param("id") Integer id,@Param("empName") String empName); -->
+    <select id="getEmpByIdAndEmpName" resultType="pers.dreamer07.bean.Employee">
+        SELECT* FROM employee WHERE id = #{id} AND emp_name = #{empName}
+    </select>
+
     <!--
     获取自增id的值 - 使用 insert / update 标签中的 useGeneratedKeys 和  keyProperty 属性
         - useGeneratedKeys：底层调用原生 JDBC 中的方法获取添加数据后自增id的值
@@ -37,5 +42,31 @@
         INSERT INTO employee(id,emp_name,email,gender) VALUES(#{id},#{empName},#{email},#{gender})
     </insert>
 
+    <!-- public List<Employee> getEmps();
+            - 对于返回值是 List 类型的方法，在实现方法时的 resultType 属性指定为集合元素类型即可
+    -->
+    <select id="getEmps" resultType="pers.dreamer07.bean.Employee">
+        SELECT * FROM employee
+    </select>
 
+    <!--
+    查询一条记录封装的 Map
+    public Map<String,Object> getEmpByIdReturnMap(Integer id);
+        - key值为查询结果的字段名
+        - value值为对应的字段值
+    -->
+    <select id="getEmpByIdReturnMap" resultType="map"> <!-- MyBatis 为 Map 类型已经定义了别名 map -->
+        SELECT * FROM employee WHERE id = #{id}
+    </select>
+
+    <!--
+    查询多条记录封装的 Map
+    @MapKey("id") //需要通过 @MapKey 注解指定查询结果的字段名作为 返回结果集Map的key值
+    public Map<Integer,Employee> getAllEmpReturnMap();
+        - key为指定的字段值
+        - value 为指定封装的数据类型对象
+    -->
+    <select id="getAllEmpReturnMap" resultType="pers.dreamer07.bean.Employee"> <!-- 这里和 List 一样，指定为 value 值的数据类型 -->
+        SELECT * FROM employee
+    </select>
 </mapper>
