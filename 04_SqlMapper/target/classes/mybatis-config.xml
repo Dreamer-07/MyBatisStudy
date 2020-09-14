@@ -9,6 +9,10 @@
     <!-- 开启 Mysql 字段 驼峰命名 映射 -->
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 开启全局延迟加载 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 开启属性延迟加载,3.4.1 以前默认是true -->
+        <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
     <!-- 配置环境 -->
@@ -27,6 +31,6 @@
     </environments>
 
     <mappers>
-        <mapper class="pers.dreamer07.dao.EmployeeDao"></mapper>
+        <package name="pers.dreamer07.dao"></package>
     </mappers>
 </configuration>

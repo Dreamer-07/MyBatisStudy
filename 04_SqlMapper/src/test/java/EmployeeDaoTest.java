@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /*
-* Mybatis的CRUD - 测试类
+* Mybatis 操作 Employee 数据表 - 测试类
 * */
 public class EmployeeDaoTest {
 
