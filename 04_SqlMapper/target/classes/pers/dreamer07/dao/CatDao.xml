@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.dreamer07.dao.CatDao">
+
+    <!--
+    根据id查询 Cat
+    public Cat getCatById(Integer id);
+    -->
+    <select id="getCatById" resultMap="CatResult"> <!-- resultMap 为 (自定义)封装规则 的id -->
+        SELECT * FROM cat WHERE id = #{id}
+    </select>
+
+    <!--
+    resultMap标签
+        - 作用：自定义封装规则
+        - 属性：
+            id - 唯一标识
+            type - 为哪一个 JavaBean 进行封装
+        - 使用：
+            1. id标签：
+                - 作用：将主键列与 JavaBean 中的属性绑定起来
+            2. result标签：
+                - 作用：将普通列与 JavaBean 中的属性绑定起来
+                - 属性：
+                    column：数据库查询后的字段名
+                    property：JavaBean 中的属性名
+    -->
+    <resultMap id="CatResult" type="pers.dreamer07.bean.Cat">
+        <id column="id" property="id"></id>
+        <result column="c_name" property="name"></result>
+        <result column="c_age" property="age"></result>
+        <result column="c_gender" property="gender"></result>
+    </resultMap>
+</mapper>

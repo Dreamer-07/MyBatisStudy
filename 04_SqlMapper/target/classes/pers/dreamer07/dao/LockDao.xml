@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.dreamer07.dao.LockDao">
+    <select id="getLockById" resultMap="LockResult">
+        SELECT k.*,l.* FROM `lock` l
+        LEFT JOIN `key` k ON l.lock_id = k.lock_id
+        WHERE l.lock_id = #{lockId};
+    </select>
+
+    <resultMap id="LockResult" type="pers.dreamer07.bean.Lock">
+        <id column="lock_id" property="lockId"></id>
+        <result column="lock_name" property="lockName"></result>
+        <!--
+        使用 collection 定义集合元素的封装
+            - property：指定集合属性
+            - ofType：集合元素类型
+         -->
+        <collection property="keyList" ofType="pers.dreamer07.bean.Key">
+            <id column="key_id" property="keyId"></id>
+            <result column="key_name" property="keyName"></result>
+        </collection>
+    </resultMap>
+
+    <!--
+    简单实现 - 根据 id 查询 Lock
+    public Lock getLockByIdSimple(int id);
+    -->
+    <select id="getLockByIdSimple" resultType="pers.dreamer07.bean.Lock">
+        SELECT * FROM `lock` WHERE lock_id = #{id}
+    </select>
+
+    <!--
+    collection 标签完成分步查询
+    public Lock getLockByIdSimple2(int id);
+    -->
+    <select id="getLockByIdSimple2" resultMap="LockResult2">
+        SELECT * FROM `lock` WHERE lock_id = #{id}
+    </select>
+    <!-- 自定义封装规则 -->
+    <resultMap id="LockResult2" type="pers.dreamer07.bean.Lock">
+        <id column="lock_id" property="lockId"></id>
+        <result column="lock_name" property="lockName"></result>
+        <!-- collection 标签完成分步查询 -->
+        <collection property="keyList"
+                    select="pers.dreamer07.dao.KeyDao.getKeyListByLockId"
+                    column="lock_id">
+        </collection>
+    </resultMap>
+</mapper>

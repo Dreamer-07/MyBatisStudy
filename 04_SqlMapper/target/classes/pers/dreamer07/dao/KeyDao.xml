@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.dreamer07.dao.KeyDao">
+
+
+
+    <!--
+    根据id查考 Key
+    public Key getKeyById(Integer id);
+    -->
+    <select id="getKeyById" resultMap="keyResult">
+        SELECT k.*,l.* FROM `key` k
+        LEFT JOIN `lock` l ON l.lock_id = k.lock_id
+        WHERE k.key_id = #{id};
+    </select>
+
+    <!-- 自定义封装规则 -->
+    <resultMap id="keyResult" type="pers.dreamer07.bean.Key">
+        <id column="key_id" property="keyId"></id>
+        <result column="key_name" property="keyName"></result>
+<!--        <result column="lock_id" property="lock.lockId"></result>-->
+<!--        <result column="lock_name" property="lock.lockName"></result>-->
+        <!--
+        使用 association标签 修改联合查询对象的封装规则
+            - property属性：对应的 级联对象属性
+            - javaType属性：级联对象属性对应的类
+        -->
+        <association property="lock" javaType="pers.dreamer07.bean.Lock">
+            <!-- 自定义Lock属性对应的Lock对象如何封装 -->
+            <id column="lock_id" property="lockId"></id>
+            <result column="lock_name" property="lockName"></result>
+        </association>
+    </resultMap>
+
+    <!--
+    简单实现：根据 id 查询 Key
+    public Key getKeyByIdSimple(Integer id);
+    -->
+    <select id="getKeyByIdSimple" resultMap="keyResult2">
+        SELECT * FROM `key` WHERE key_id = #{id}
+    </select>
+    <!-- 自定义封装规则 -->
+    <resultMap id="keyResult2" type="pers.dreamer07.bean.Key">
+        <id column="key_id" property="keyId"></id>
+        <result column="key_name" property="keyName"></result>
+        <!--
+        使用 association 根据查询 key 的 lock_id 字段调用其他Dao中的方法，获取对应的 lock 属性
+            - property:javaBean属性名
+            - select:要调用的方法
+            - column:将前一个查找的字段值作为参数传入到 select 对应的方法中
+        -->
+        <association property="lock"
+                     select="pers.dreamer07.dao.LockDao.getLockByIdSimple"
+                     column="lock_id">
+        </association>
+    </resultMap>
+
+    <!--
+    根据 锁id 查询所有可以开这把锁的 key 所构成的集合
+    public List<Key> getKeyListByLockId(Integer lockId);
+    -->
+    <select id="getKeyListByLockId" resultType="pers.dreamer07.bean.Key">
+        SELECT * FROM `key` WHERE lock_id = #{lockId}
+    </select>
+</mapper>

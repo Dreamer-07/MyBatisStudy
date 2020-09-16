@@ -102,7 +102,7 @@
             2. url：可以通过 网络 / 磁盘 加载 SQL 映射文件
             3. class：
                 3.1 用法一：指定全类名，要求时在该类的同路径下有一个同名的 SQL 映射文件
-                3.2 用法二：指定全类名：使用注解配置该类
+                3.2 用法二：指定全类名：使用注解配置该接口
         -->
 <!--        <mapper resource="mybatis_conf/EmployeeDao.xml"/>-->
         <package name="pers.dreamer07"/>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.dreamer07.dao.TeacherDao">
+    <!--
+    使用id作为唯一标识
+    -->
+    <sql id="baseSelect">
+        SELECT * FROM teacher
+    </sql>
+    <!--
+    根据 id 查询对应的数据后封装的 Teacher 对象
+    public Teacher getTeacherById(Integer id);
+    -->
+    <select id="getTeacherById" resultMap="TeacherResult">
+        <!--
+        使用 include 标签的 refid 属性指定为 <sql> 标签的 id 属性
+        将对于的 SQL 语句引入进来
+        -->
+        <include refid="baseSelect"></include> WHERE id = #{id}
+    </select>
+
+
+    <!--
+    根据符合现有条件
+    public List<Teacher> getTeacherListByCondition(Teacher teacher);
+    -->
+    <select id="getTeacherListByCondition" resultMap="TeacherResult">
+        SELECT * FROM teacher
+        <!--
+        使用 where 标签自动添加 where 和去除不需要的 and
+        具体实现就是
+            1. 去除原 SQL 语句中的 WHERE
+            2. where 中的第一个 if 标签中的 SQL 语句，不使用 AND
+            3. 剩下的 if 标签中的 SQL 语句中都在前面加上一个 AND
+        -->
+        <where>
+            <!-- 使用 if 标签添加动态 SQL
+                    - test:OGNL表达式，支持非常多 Java 中的语法，注意特殊字符在 xml 文件中需要使用转义字符
+                    - id:传入形参对象中的属性名
+            -->
+            <if test="id!=null"> <!-- 如果test为 true，就会拼接 if 标签中的 SQL 语句-->
+                id &lt; #{id} <!-- 符合条件时添加的 SQL 语句 -->
+            </if>
+            <if test="name!=null &amp;&amp; !name.equals(&quot;&quot;)">
+                AND teacher_name LIKE #{name}
+            </if>
+            <if test="birth">
+                AND birth_date > #{birth}
+            </if>
+        </where>
+    </select>
+
+    <!--
+    根据 id 集合，查询所有对应的教师信息
+    public List<Teacher> getTeacherListByIdList(@Param("idList") List<Integer> idList);
+    -->
+    <select id="getTeacherListByIdList" resultMap="TeacherResult">
+        SELECT * FROM teacher WHERE id IN
+        <!-- 使用 forEach 标签遍历集合中的元素
+                collection:需要遍历的参数 key
+                open="":以指定字符串开始
+                close="":以指定字符串结束
+                index="":
+                    - 对于 List 就是为当前元素的索引值起一个别名
+                    - 对于 Map 就是为当前元素的 key 值起一个别名
+                item="":为遍历出来的元素起一个别名(Map中的value)
+                separator="":元素间以什么分隔
+        -->
+        <foreach collection="idList" open="(" close=")" index="i" item="id" separator=",">
+            #{id} <!-- 直接取出元素凭借即可 -->
+        </foreach>
+    </select>
+
+    <!--
+    根据现有条件，选择其中一个条件查找对应的数据
+    public List<Teacher> getTeacherListByConditionChoose(Teacher teacher);
+    -->
+    <select id="getTeacherListByConditionChoose" resultMap="TeacherResult">
+        SELECT * FROM teacher
+        <where>
+            <!-- 使用 choose 分支选择条件 -->
+            <choose>
+                <!-- 使用 when 标签进行分支判断，如果进入该分支就拼接对应的 SQL 语句后退出 choose -->
+                <when test="id!=null">
+                    id = #{id}
+                </when>
+                <when test="name!=null and !name.equals(&quot;&quot;)">
+                    teacher_name = #{name}
+                </when>
+                <when test="birth!=null">
+                    birth_date > #{birth}
+                </when>
+                <!-- 使用 otherwise 标签，如果上面的 when 都能没执行，就会默认拼接 otherwise 中的 SQL 语句 -->
+                <otherwise>
+                    1 AND 1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <!--
+    动态更新
+    public int updateTeacher(Teacher teacher);
+    -->
+    <update id="updateTeacher">
+        UPDATE teacher
+        <set>
+            <if test="name!=null and !name.equals(&quot;&quot;)">
+                teacher_name = #{name},
+            </if>
+            <if test="course!=null and !course.equals(&quot;&quot;)">
+                class_name = #{course},
+            </if>
+            <if test="address!=null and !address.equals(&quot;&quot;)">
+                address = #{address}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <!-- 自定义封装规则 -->
+    <resultMap id="TeacherResult" type="pers.dreamer07.bean.Teacher">
+        <id column="id" property="id"></id>
+        <result column="teacher_name" property="name"></result>
+        <result column="class_name" property="course"></result>
+        <result column="address" property="address"></result>
+        <result column="birth_date" property="birth"></result>
+    </resultMap>
+</mapper>
