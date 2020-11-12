@@ -27,10 +27,10 @@
                     column：数据库查询后的字段名
                     property：JavaBean 中的属性名
     -->
-    <resultMap id="CatResult" type="pers.dreamer07.bean.Cat">
-        <id column="id" property="id"></id>
-        <result column="c_name" property="name"></result>
-        <result column="c_age" property="age"></result>
-        <result column="c_gender" property="gender"></result>
+<!--    <resultMap id="CatResult" type="pers.dreamer07.bean.Cat">-->
+<!--        <id column="id" property="id"></id>-->
+<!--        <result column="c_name" property="name"></result>-->
+<!--        <result column="c_age" property="age"></result>-->
+<!--        <result column="c_gender" property="gender"></result>-->
     </resultMap>
 </mapper>

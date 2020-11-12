@@ -1,28 +1,15 @@
 package pers.dreamer07.bean;
 
-import org.apache.ibatis.type.Alias;
-
-/*
-* 员工类
-* */
-@Alias("Emp") //批量起别名
 public class Employee {
-
     private Integer id;
+
     private String empName;
+
     private String email;
-    private Integer gender; //1 代表男，0 代表女
-    private Integer deptId; //测试 mapUnderscoreToCamelCase 自动映射属性
 
-    public Employee() {
-    }
+    private Integer gender;
 
-    public Employee(Integer id, String empName, String email, Integer gender) {
-        this.id = id;
-        this.empName = empName;
-        this.email = email;
-        this.gender = gender;
-    }
+    private Integer deptId;
 
     public Integer getId() {
         return id;
@@ -62,17 +49,5 @@ public class Employee {
 
     public void setDeptId(Integer deptId) {
         this.deptId = deptId;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "id=" + id +
-                ", empName='" + empName + '\'' +
-                ", email='" + email + '\'' +
-                ", gender=" + gender +
-                ", deptId=" + deptId +
-                '}';
     }
 }

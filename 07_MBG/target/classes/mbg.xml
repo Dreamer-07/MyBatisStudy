@@ -1,0 +1,53 @@
+<!DOCTYPE generatorConfiguration PUBLIC
+        "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- 引入外部配置文件 -->
+    <properties resource="./jdbc.properties"></properties>
+
+    <!--
+    context:类似于环境
+    targetRuntime:生成的模式，可以用 MyBatis3Simple / MyBatis3(生成的比较复杂)
+    -->
+    <context id="simple" targetRuntime="MyBatis3">
+
+        <commentGenerator>
+            <!-- 是否不生成注释,默认为false -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!-- 指定需要连接的数据库 -->
+        <jdbcConnection driverClass="${driverClass}"
+                        connectionURL="${url}"
+                        userId="${username}"
+                        password="${password}">
+            <!-- 高版本的 mysql 驱动需要添加以下配置 -->
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+
+        <!-- 生成 POJO
+                - targetPackage：生成的 POJO 所放的包位置
+                - targetProject:放在哪个工程下
+        -->
+        <javaModelGenerator targetPackage="pers.dreamer07.bean" targetProject="./src/main/java"/>
+
+        <!-- 生成 sql 映射文件
+                - targetPackage：生成的 POJO 所放的包位置
+                - targetProject:放在哪个工程下
+        -->
+        <sqlMapGenerator targetPackage="pers.dreamer07.dao" targetProject="./src/main/resources"/>
+
+        <!-- 生成 DAO 接口
+                - targetPackage：生成的 POJO 所放的包位置
+                - targetProject:放在哪个工程下
+        -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="pers.dreamer07.dao" targetProject="./src/main/java"/>
+
+        <!-- 指定 数据库表与实体类的映射关系
+                - tableName: 生成实体类的表命
+                - domainObjectName: 对应的实体类名称(默认帕斯卡命名法命名)
+        -->
+        <table tableName="employee" domainObjectName="Employee" />
+        <table tableName="teacher" />
+    </context>
+</generatorConfiguration>
